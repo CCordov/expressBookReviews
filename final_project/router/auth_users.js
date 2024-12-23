@@ -74,6 +74,19 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     return res.send("The review for the book with ISBN "+isbn+" has been added/updated.");
 });
 
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    const username = req.session.authorization.username;
+    const isbn = req.params.isbn;
+    
+    for (const key in books[isbn].reviews){
+        if(books[isbn].reviews[key].user === username){
+            delete books[isbn].reviews[key];
+            break;
+        }
+    }
+    
+    return res.send("Reviews for the ISBN "+isbn+" posted by the user "+username+" deleted.");
+});
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
 module.exports.users = users;
