@@ -54,26 +54,23 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     const username = req.session.authorization.username;
     const isbn = req.params.isbn;
     const review = req.query.review;
+    let  find = false;
 
-    //let reviews = books[isbn].reviews;
-    if(books[isbn].reviews){
-
+    if(Object.keys(books[isbn].reviews).length === 0){
+        books[isbn].reviews = [];
+        books[isbn].reviews.push({"user":username,"review":review});    
     } else {
-        
+        for (const key in books[isbn].reviews){
+            if(books[isbn].reviews[key].user === username){
+                books[isbn].reviews[key].review = review;
+                find = true;
+                break;
+            }
+        }
+        if(!find){
+            books[isbn].reviews.push({"user":username,"review":review});   
+        }
     }
-    let totalReviewByBook = []
-    let newReview = {}
-    newReview.user = username;
-    newReview.review = review;
-    totalReviewByBook.push(newReview);    
-
-    books[isbn].reviews = totalReviewByBook;
-
-    //reviews["user"] = username;
-    //reviews["review"] = review;
-    console.log(books[isbn].reviews);
-    console.log("---");
-
     return res.send("The review for the book with ISBN "+isbn+" has been added/updated.");
 });
 
