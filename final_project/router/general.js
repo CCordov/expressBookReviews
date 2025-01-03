@@ -38,18 +38,35 @@ public_users.post("/register", (req,res) => {
 
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
-  res.send(JSON.stringify(books,null,4));
+    //res.send(JSON.stringify(books,null,4));
+    let myPromise = new Promise((resolve,reject) => {
+        res.send(JSON.stringify(books,null,4));
+        resolve("Promise resolved")    
+    })
+
+    myPromise.then((successMessage) => {
+        console.log("From Callback " + successMessage)
+    })
 });
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
-    const isbn = req.params.isbn;
-    res.send(JSON.stringify(books[isbn],null,4));
+    //const isbn = req.params.isbn;
+    //res.send(JSON.stringify(books[isbn],null,4));
+    let myPromise = new Promise((resolve,reject) => {
+        const isbn = req.params.isbn;
+        res.send(JSON.stringify(books[isbn],null,4));
+        resolve("Promise resolved")    
+    })
+
+    myPromise.then((successMessage) => {
+        console.log("From Callback " + successMessage)
+    })
  });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-    const author = req.params.author;
+    /*const author = req.params.author;
     const booksByAuthor = [];
 
     for (const book in books){
@@ -61,12 +78,31 @@ public_users.get('/author/:author',function (req, res) {
         res.send(JSON.stringify(booksByAuthor,null,4));
     } else {
         return res.send("Author not found");
-    }
+    }*/
+
+    let myPromise = new Promise((resolve,reject) => {
+        const author = req.params.author;
+        const booksByAuthor = [];
+        for (const book in books){
+            if(books[book].author === author){
+                booksByAuthor.push(books[book]);
+            }
+        }
+        if (booksByAuthor.length > 0) {
+            res.send(JSON.stringify(booksByAuthor,null,4));
+            resolve("Promise resolved")   
+        } else {
+            return res.send("Author not found");
+        }
+    })
+    myPromise.then((successMessage) => {
+        console.log("From Callback " + successMessage)
+    })
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-    const title = req.params.title;
+    /*const title = req.params.title;
     const booksByTitle = [];
 
     for (const book in books){
@@ -78,7 +114,27 @@ public_users.get('/title/:title',function (req, res) {
         res.send(JSON.stringify(booksByTitle,null,4));
     } else {
         return res.send("Title not found");
-    }
+    }*/
+
+    let myPromise = new Promise((resolve,reject) => {
+        const title = req.params.title;
+        const booksByTitle = [];
+        for (const book in books){
+            if(books[book].title === title){
+                booksByTitle.push(books[book]);
+            }
+        }
+        if (booksByTitle.length > 0) {
+            res.send(JSON.stringify(booksByTitle,null,4));
+            resolve("Promise resolved")   
+        } else {
+            return res.send("Title not found");
+        }
+    })
+
+    myPromise.then((successMessage) => {
+        console.log("From Callback " + successMessage)
+    })
 });
 
 //  Get book review
